@@ -21,12 +21,11 @@ import {
   HiArrowUp,
   HiArrowDown,
 } from 'react-icons/hi';
-import type { DevlogBlock } from '../../../../lesson5/src/types/devlog';
+import type { DevlogBlock } from '../../types/devlog';
 
 const DevlogEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { loggedInUser } = useLoggedInUsersContext();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingDevlog, setLoadingDevlog] = useState(true);
   const [notebooks, setNotebooks] = useState<any[]>([]);

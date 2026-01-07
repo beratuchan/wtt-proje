@@ -12,7 +12,7 @@ import {
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import type { LoggedInUser } from "../auth/LoggedInUserContext";
 import { useLoggedInUsersContext } from "../auth/LoggedInUserContext";
-import { HiOutlineLogout, HiUser, HiCog, HiViewGrid, HiAcademicCap, HiOutlineBookOpen, HiOutlineFlag } from "react-icons/hi";
+import { HiOutlineLogout, HiUser, HiViewGrid, HiAcademicCap, HiOutlineBookOpen, HiOutlineFlag } from "react-icons/hi";
 import Cookies from "universal-cookie";
 import { clearToken, getUserPhotoUrl } from "../../helper/api";
 import { useEffect, useState } from "react";

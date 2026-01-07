@@ -16,7 +16,6 @@ import { HiArrowLeft, HiSave } from 'react-icons/hi';
 
 const NotebookCreate = () => {
   const navigate = useNavigate();
-  const { loggedInUser } = useLoggedInUsersContext();
 
   // isPublic KALDIRILDI
   const [formData, setFormData] = useState({

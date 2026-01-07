@@ -26,7 +26,6 @@ import {
 } from 'react-icons/hi';
 
 const NotebookList = () => {
-  const { loggedInUser } = useLoggedInUsersContext();
   const navigate = useNavigate();
   const [notebooks, setNotebooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

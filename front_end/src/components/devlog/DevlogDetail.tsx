@@ -30,10 +30,8 @@ import {
   HiArrowLeft,
   HiOutlineFlag,
   HiOutlineExclamation,
-  HiOutlineChat,
   HiOutlinePlus,
 } from 'react-icons/hi';
-import type { DevlogBlock } from '../../../../lesson5/src/types/devlog';
 
 // ✅ YENİ: Fotoğraf cache yönetimi için hook
 const useUserPhotoUrl = (photoUrl: string | null | undefined, userId?: number) => {

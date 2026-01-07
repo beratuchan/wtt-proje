@@ -11,7 +11,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  Badge
 } from "flowbite-react";
 import { api, getFullImageUrl } from "../../helper/api";
 import { toast } from "sonner";

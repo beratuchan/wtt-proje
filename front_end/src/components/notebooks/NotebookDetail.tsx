@@ -26,7 +26,6 @@ import {
   HiOutlineTrash,
   HiOutlinePencil,
   HiOutlinePlus,
-  HiOutlineLink,
   HiDotsVertical,
 } from 'react-icons/hi';
 

@@ -1,4 +1,3 @@
-import { Avatar } from "flowbite-react";
 
 export const Baslik = () => {
   return (
