@@ -6,8 +6,10 @@ import * as express from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
+  const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',');
+  
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
   });
   
@@ -24,8 +26,9 @@ async function bootstrap() {
   // Tüm uploads klasörünü statik dosya olarak sun
   app.use('/uploads', express.static(uploadsPath));
   
-  await app.listen(3000);
-  console.log(`🚀 Backend çalışıyor: http://localhost:3000`);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`🚀 Backend çalışıyor: ${process.env.BACKEND_URL || `http://localhost:${port}`}`);
   console.log(`🖼️  Devlog görselleri: http://localhost:3000/uploads/devlog-images/`);
   console.log(`👤 Profil fotoğrafları: http://localhost:3000/uploads/profile-photos/`);
 }

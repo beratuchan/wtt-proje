@@ -19,13 +19,13 @@ import { Complaint } from './complaint/complaint.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '',
-      database: 'lesson2v2',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASS || '',
+      database: process.env.DB_NAME || 'lesson2v2',
       entities: [User, Notebook, DevlogPage, Complaint], // Complaint'i ekleyin
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production',
       extra: {
         client_encoding: 'utf8'
       }
