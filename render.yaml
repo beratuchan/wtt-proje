@@ -9,6 +9,16 @@ services:
         value: production
       - key: PORT
         value: 3000
+      - key: CLOUDINARY_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://wtt-final.vercel.app,http://localhost:5173
     autoDeploy: true
 
 databases:

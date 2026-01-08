@@ -1,9 +1,10 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "env": {
+    "VITE_API_URL": "@wtt_api_url"
+  },
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://wtt-proje.onrender.com/api/$1"
-    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
