@@ -31,23 +31,25 @@ export class DevlogPagesController {
   async findAll(@Request() req, @Query('mine') mine?: string) {
     console.log('🟡 GET /devlogs called, mine:', mine, 'user:', req.user?.id);
     
-    // Eğer mine=true ise, sadece kullanıcının kendi devloglarını getir
+    // Eğer mine=true ise, sadece kullanıcının kendi devloglarını getir (published/unpublished)
     if (mine === 'true') {
       console.log('✅ Getting user\'s own devlogs for user ID:', req.user.id);
       return this.devlogPagesService.findAll(req.user);
     }
     
-    // Değilse, tüm public devlogları getir (ancak kullanıcının kendisininkileri hariç)
+    // Değilse, tüm public devlogları getir (başkalarının published'ları + kendi tümü)
     console.log('✅ Getting all public devlogs');
     const allDevlogs = await this.devlogPagesService.findAll();
     
-    // Kullanıcının kendi devloglarını filtrele (eğer user varsa)
+    // Kendi devlog'larını ekle (published/unpublished hepsi)
     if (req.user) {
-      const filtered = allDevlogs.filter(devlog => 
+      const userDevlogs = await this.devlogPagesService.findAll(req.user);
+      const otherPublishedDevlogs = allDevlogs.filter(devlog => 
         devlog.author?.id !== req.user.id && devlog.isPublished
       );
-      console.log(`✅ Filtered ${allDevlogs.length} devlogs to ${filtered.length} (excluding user's own)`);
-      return filtered;
+      const combined = [...userDevlogs, ...otherPublishedDevlogs];
+      console.log(`✅ Returning ${combined.length} devlogs (user's own: ${userDevlogs.length} + others' published: ${otherPublishedDevlogs.length})`);
+      return combined;
     }
     
     // Giriş yapmamış kullanıcı için tüm public devlogları döndür
