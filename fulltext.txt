@@ -65,13 +65,13 @@ import { Complaint } from './complaint/complaint.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '',
-      database: 'lesson2v2',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASS || '',
+      database: process.env.DB_NAME || 'lesson2v2',
       entities: [User, Notebook, DevlogPage, Complaint], // Complaint'i ekleyin
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production',
       extra: {
         client_encoding: 'utf8'
       }
@@ -108,8 +108,10 @@ import * as express from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
+  const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',');
+  
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
   });
   
@@ -126,8 +128,9 @@ async function bootstrap() {
   // Tüm uploads klasörünü statik dosya olarak sun
   app.use('/uploads', express.static(uploadsPath));
   
-  await app.listen(3000);
-  console.log(`🚀 Backend çalışıyor: http://localhost:3000`);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`🚀 Backend çalışıyor: ${process.env.BACKEND_URL || `http://localhost:${port}`}`);
   console.log(`🖼️  Devlog görselleri: http://localhost:3000/uploads/devlog-images/`);
   console.log(`👤 Profil fotoğrafları: http://localhost:3000/uploads/profile-photos/`);
 }
@@ -369,13 +372,13 @@ export class AuthService {
       email: user.email,
       photo: user.photo 
     };
-    
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     return {
       id: user.id,
       username: user.username,
       email: user.email,
       role: user.role,
-      photo: user.photo ? `http://localhost:3000/uploads/profile-photos/${user.photo}` : '',
+      photo: user.photo ? `${baseUrl}/uploads/profile-photos/${user.photo}` : '',
       accessToken: this.jwtService.sign(payload),
     };
   }
@@ -393,10 +396,10 @@ export class AuthService {
       order: { id: 'ASC' },
       select: ['id', 'username', 'email', 'role', 'photo'],
     });
-    
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     return users.map(user => ({
       ...user,
-      photo: user.photo ? `http://localhost:3000/uploads/profile-photos/${user.photo}` : '',
+      photo: user.photo ? `${baseUrl}/uploads/profile-photos/${user.photo}` : '',
     }));
   }
 
@@ -551,8 +554,9 @@ export class AuthService {
     console.log('✅ Kullanıcı kaydedildi');
 
     // Tam URL oluştur
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     const fullPhotoUrl = user.photo 
-      ? `http://localhost:3000/uploads/profile-photos/${user.photo}`
+      ? `${baseUrl}/uploads/profile-photos/${user.photo}`
       : '';
 
     console.log('✅ Tam photo URL:', fullPhotoUrl);
@@ -2338,7 +2342,7 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/",
 });
 
 // Her istekten önce token'ı otomatik ekle
@@ -2391,25 +2395,19 @@ export function getUserPhotoUrl(url: string | null | undefined, forceRefresh = f
   if (!url || url.trim() === '') {
     return 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop';
   }
-  
   // Zaten tam URL ise
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    // Cache busting için timestamp ekleyelim (sadece forceRefresh true ise)
     return forceRefresh ? `${url}?t=${Date.now()}` : url;
   }
-  
-  // Local development için base URL
-  const baseUrl = 'http://localhost:3000';
-  
+  // VITE_API_URL'i kullan
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
   // Eğer slash ile başlamıyorsa ekle
   const path = url.startsWith('/') ? url : `/${url}`;
-  
   // Eğer uploads ile başlıyorsa direkt kullan
   if (path.includes('uploads/')) {
     const fullUrl = `${baseUrl}${path}`;
     return forceRefresh ? `${fullUrl}?t=${Date.now()}` : fullUrl;
   }
-  
   // Varsayılan olarak uploads klasörüne ekle
   const fullUrl = `${baseUrl}/uploads${path}`;
   return forceRefresh ? `${fullUrl}?t=${Date.now()}` : fullUrl;
@@ -2420,28 +2418,22 @@ export function getFullImageUrl(url: string | null | undefined): string {
   if (!url || url.trim() === '') {
     return '';
   }
-  
   // Zaten tam URL ise
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  
   // base64 ise
   if (url.startsWith('data:image')) {
     return url;
   }
-  
-  // Local development için base URL
-  const baseUrl = 'http://localhost:3000';
-  
+  // VITE_API_URL'i kullan
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
   // Eğer slash ile başlamıyorsa ekle
   const path = url.startsWith('/') ? url : `/${url}`;
-  
   // Eğer uploads ile başlıyorsa direkt kullan
   if (path.includes('uploads/')) {
     return `${baseUrl}${path}`;
   }
-  
   // Varsayılan olarak profile-photos klasörüne ekle
   return `${baseUrl}/uploads/profile-photos${path}`;
 }
@@ -2481,6 +2473,50 @@ export function showErrors(error: any) {
   error.response.data.message.forEach((m: string) => {
     toast.error(m);
   });
+}
+
+
+// === C:\Users\BERAT\Desktop\wtt_finalproje\front_end\src\types\devlog.ts ===
+
+// types/devlog.ts
+import type { User } from './User';
+
+// DevlogBlock tip tanımları
+export type DevlogBlock = 
+  | { type: 'paragraph'; content: string }
+  | { type: 'heading'; level: 2 | 3; text: string; className?: string }
+  | { type: 'code'; language: string; code: string }
+  | { type: 'image'; src: string; alt: string; caption?: string }
+  | { type: 'quote'; text: string; author?: string };
+  // Not: table tipi çıkarıldı
+
+// DevlogPage tipi (backend ile uyumlu)
+export interface DevlogPage {
+  id: number;
+  title: string;
+  content: DevlogBlock[];
+  coverImage: string;
+  viewCount: number;
+  likeCount: number;
+  isPublished: boolean;
+  author: User;
+  originalNotebook: Notebook;
+  notebooks: Notebook[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Notebook tipi
+export interface Notebook {
+  id: number;
+  name: string;
+  description: string;
+  isDefault: boolean;
+  isPublic: boolean;
+  user: User;
+  devlogPages: DevlogPage[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 
@@ -3949,7 +3985,6 @@ export default ComplaintModal;
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { useLoggedInUsersContext } from '../auth/LoggedInUserContext';
 import { api } from '../../helper/api';
 import { toast } from 'sonner';
 import {
@@ -3970,11 +4005,10 @@ import {
   HiArrowUp,
   HiArrowDown,
 } from 'react-icons/hi';
-import type { DevlogBlock } from '../../../../lesson5/src/types/devlog';
+import type { DevlogBlock } from '../../types/devlog';
 
 const DevlogCreate = () => {
   const navigate = useNavigate();
-  const { loggedInUser } = useLoggedInUsersContext();
   const [isLoading, setIsLoading] = useState(false);
   const [notebooks, setNotebooks] = useState<any[]>([]);
   const [selectedNotebookId, setSelectedNotebookId] = useState<string>('');
@@ -4685,10 +4719,8 @@ import {
   HiArrowLeft,
   HiOutlineFlag,
   HiOutlineExclamation,
-  HiOutlineChat,
   HiOutlinePlus,
 } from 'react-icons/hi';
-import type { DevlogBlock } from '../../../../lesson5/src/types/devlog';
 
 // ✅ YENİ: Fotoğraf cache yönetimi için hook
 const useUserPhotoUrl = (photoUrl: string | null | undefined, userId?: number) => {
@@ -5496,7 +5528,6 @@ export default DevlogDetail;
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { useLoggedInUsersContext } from '../auth/LoggedInUserContext';
 import { api, getFullImageUrl } from '../../helper/api';
 import { toast } from 'sonner';
 import {
@@ -5517,12 +5548,11 @@ import {
   HiArrowUp,
   HiArrowDown,
 } from 'react-icons/hi';
-import type { DevlogBlock } from '../../../../lesson5/src/types/devlog';
+import type { DevlogBlock } from '../../types/devlog';
 
 const DevlogEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { loggedInUser } = useLoggedInUsersContext();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingDevlog, setLoadingDevlog] = useState(true);
   const [notebooks, setNotebooks] = useState<any[]>([]);
@@ -7002,7 +7032,6 @@ export default AuthenticationLayout;
 
 // === C:\Users\BERAT\Desktop\wtt_finalproje\front_end\src\components\layouts\Baslik.tsx ===
 
-import { Avatar } from "flowbite-react";
 
 export const Baslik = () => {
   return (
@@ -7058,7 +7087,7 @@ import {
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import type { LoggedInUser } from "../auth/LoggedInUserContext";
 import { useLoggedInUsersContext } from "../auth/LoggedInUserContext";
-import { HiOutlineLogout, HiUser, HiCog, HiViewGrid, HiAcademicCap, HiOutlineBookOpen, HiOutlineFlag } from "react-icons/hi";
+import { HiOutlineLogout, HiUser, HiViewGrid, HiAcademicCap, HiOutlineBookOpen, HiOutlineFlag } from "react-icons/hi";
 import Cookies from "universal-cookie";
 import { clearToken, getUserPhotoUrl } from "../../helper/api";
 import { useEffect, useState } from "react";
@@ -7229,7 +7258,6 @@ export default CustomNavbar;
 // src/components/notebooks/NotebookCreate.tsx - GÜNCEL (isPublic kaldırıldı)
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useLoggedInUsersContext } from '../auth/LoggedInUserContext';
 import { api } from '../../helper/api';
 import { toast } from 'sonner';
 import {
@@ -7244,7 +7272,6 @@ import { HiArrowLeft, HiSave } from 'react-icons/hi';
 
 const NotebookCreate = () => {
   const navigate = useNavigate();
-  const { loggedInUser } = useLoggedInUsersContext();
 
   // isPublic KALDIRILDI
   const [formData, setFormData] = useState({
@@ -7389,7 +7416,6 @@ import {
   HiOutlineTrash,
   HiOutlinePencil,
   HiOutlinePlus,
-  HiOutlineLink,
   HiDotsVertical,
 } from 'react-icons/hi';
 
@@ -7769,7 +7795,6 @@ export default NotebookDetail;
 // src/components/notebooks/NotebookEdit.tsx - GÜNCEL (isPublic kaldırıldı)
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { useLoggedInUsersContext } from '../auth/LoggedInUserContext';
 import { api } from '../../helper/api';
 import { toast } from 'sonner';
 import {
@@ -7785,7 +7810,6 @@ import { HiArrowLeft, HiSave } from 'react-icons/hi';
 const NotebookEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { loggedInUser } = useLoggedInUsersContext();
 
   // isPublic KALDIRILDI
   const [formData, setFormData] = useState({
@@ -7955,7 +7979,6 @@ export default NotebookEdit;
 // src/components/notebooks/NotebookList.tsx - GÜNCEL VERSİYON (isPublic kaldırıldı)
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { useLoggedInUsersContext } from '../auth/LoggedInUserContext';
 import { api } from '../../helper/api';
 import { toast } from 'sonner';
 import {
@@ -7980,7 +8003,6 @@ import {
 } from 'react-icons/hi';
 
 const NotebookList = () => {
-  const { loggedInUser } = useLoggedInUsersContext();
   const navigate = useNavigate();
   const [notebooks, setNotebooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -8271,7 +8293,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  Badge
 } from "flowbite-react";
 import { api, getFullImageUrl } from "../../helper/api";
 import { toast } from "sonner";
@@ -8405,19 +8426,18 @@ const UserProfile = () => {
   // Fotoğraf URL'sini getir
   const getPhotoUrl = () => {
     const photoUrl = photoPreview || loggedInUser?.photo;
-    
     if (!photoUrl || photoUrl.trim() === '') {
       return null;
     }
-    
-    if (photoUrl.startsWith('data:image')) {
+    // Zaten tam URL ise veya base64 ise
+    if (
+      photoUrl.startsWith('data:image') ||
+      photoUrl.startsWith('http://') ||
+      photoUrl.startsWith('https://')
+    ) {
       return photoUrl;
     }
-    
-    if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
-      return photoUrl;
-    }
-    
+    // Her durumda tam backend adresiyle döndür
     return getFullImageUrl(photoUrl);
   };
 
