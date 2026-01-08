@@ -1,5 +1,5 @@
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
-import { storage } from 'multer-storage-cloudinary';
+import CloudinaryStorage from 'multer-storage-cloudinary';
 import { v2 as cloudinary } from 'cloudinary';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
@@ -10,7 +10,7 @@ cloudinary.config({
 });
 
 export const multerConfig: MulterOptions = {
-  storage: storage({
+  storage: new CloudinaryStorage({
     cloudinary: cloudinary,
     folder: 'profile-photos',
     format: async (req, file) => 'png',
