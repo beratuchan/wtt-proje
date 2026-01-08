@@ -58,7 +58,7 @@ export class AuthController {
       console.log('📁 Full file object:', JSON.stringify(file, null, 2));
       
       // Cloudinary URL'sini bul
-      const photoUrl = (file as any).secure_url || (file as any).path || (file as any).url || file.filename;
+      const photoUrl = (file as any).secure_url || (file as any).url || (file as any).path || file.filename;
       registerUser.photo = photoUrl;
       console.log('✅ Seçilen photo URL:', photoUrl);
     }
@@ -138,8 +138,11 @@ async changePassword(
       console.log('📁 File object keys:', Object.keys(file));
       console.log('📁 Full file object:', JSON.stringify(file, null, 2));
       
-      // Cloudinary URL'sini bul
-      const photoUrl = (file as any).secure_url || (file as any).path || (file as any).url || file.filename;
+      // Cloudinary URL'sini bul - Cloudinary 'url' property'sini kullan
+      const photoUrl = (file as any).secure_url || (file as any).url || (file as any).path;
+      if (!photoUrl) {
+        throw new BadRequestException('Dosya yükleme başarısız - Cloudinary URL alınamadı');
+      }
       updateData.photo = photoUrl;
       console.log('✅ Seçilen photo URL:', photoUrl);
     }

@@ -13,7 +13,8 @@ export const multerDevlogConfig: MulterOptions = {
   storage: new CloudinaryStorage({
     cloudinary: cloudinary,
     folder: 'devlog-images',
-    format: async (req, file) => 'auto',
+    allowedFormats: ['jpeg', 'png', 'gif', 'webp', 'svg'],
+    transformation: [{ width: 1200, height: 600, crop: 'fill' }],
   }),
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB

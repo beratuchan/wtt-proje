@@ -13,7 +13,8 @@ export const multerConfig: MulterOptions = {
   storage: new CloudinaryStorage({
     cloudinary: cloudinary,
     folder: 'profile-photos',
-    format: async (req, file) => 'png',
+    allowedFormats: ['jpeg', 'png', 'gif', 'webp'],
+    transformation: [{ width: 500, height: 500, crop: 'fill' }],
   }),
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
