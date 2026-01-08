@@ -20,7 +20,7 @@ import { Role } from '../auth/role.decorator';
 import { DevlogPagesService } from './devlog-page.service';
 import { CreateDevlogPageDto } from './create-devlog-page.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerDevlogConfig } from '../config/multer-devlog.config';
+import { getMulterDevlogConfig } from '../config/multer-devlog.config';
 
 @Controller('devlogs')
 export class DevlogPagesController {
@@ -79,7 +79,7 @@ export class DevlogPagesController {
     // YENİ: Görsel yükleme endpoint'i
   @UseGuards(AuthGuard('jwt'))
   @Post('upload-image')
-  @UseInterceptors(FileInterceptor('image', multerDevlogConfig))
+  @UseInterceptors(FileInterceptor('image', getMulterDevlogConfig()))
   async uploadImage(@UploadedFile() file: any) {
     if (!file) {
       throw new BadRequestException('Lütfen bir resim dosyası yükleyin');
@@ -100,7 +100,7 @@ export class DevlogPagesController {
   // YENİ: Cover görsel yükleme endpoint'i
   @UseGuards(AuthGuard('jwt'))
   @Post('upload-cover')
-  @UseInterceptors(FileInterceptor('cover', multerDevlogConfig))
+  @UseInterceptors(FileInterceptor('cover', getMulterDevlogConfig()))
   async uploadCoverImage(@UploadedFile() file: any) {
     if (!file) {
       throw new BadRequestException('Lütfen bir kapak resmi yükleyin');

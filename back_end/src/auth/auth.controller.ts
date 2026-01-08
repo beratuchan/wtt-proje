@@ -114,7 +114,7 @@ async changePassword(
   // ✅ GÜNCELLENMİŞ: Profil güncelleme - VALIDATION SORUNU ÇÖZÜLDÜ
   @UseGuards(AuthGuard('jwt'))
   @Post('profile/update')
-  @UseInterceptors(FileInterceptor('photo', multerConfig))
+  @UseInterceptors(FileInterceptor('photo', getMulterConfig()))
   async updateProfile(
     @Request() req,
     @Body() updateData: any, // ✅ ValidationPipe'ı KALDIRDIM - Geçici çözüm
