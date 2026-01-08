@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import * as cloudinary from 'cloudinary';
 
 // Cloudinary'yi merkezi olarak configure et
 export function initializeCloudinary() {
@@ -14,15 +14,15 @@ export function initializeCloudinary() {
     api_secret: config.api_secret ? '***' : 'MISSING',
   });
 
-  cloudinary.config(config);
+  cloudinary.v2.config(config);
 
   // Verify configuration
-  if (!cloudinary.config().cloud_name) {
+  if (!cloudinary.v2.config().cloud_name) {
     console.error('❌ CRITICAL: Cloudinary cloud_name is not configured!');
     throw new Error('Cloudinary cloud_name is required');
   }
 
-  if (!cloudinary.config().api_key) {
+  if (!cloudinary.v2.config().api_key) {
     console.error('❌ CRITICAL: Cloudinary api_key is not configured!');
     throw new Error('Cloudinary api_key is required');
   }
@@ -31,5 +31,5 @@ export function initializeCloudinary() {
   return cloudinary;
 }
 
-// Export configured cloudinary instance
+// Export full cloudinary module (with v2 configured)
 export { cloudinary };
