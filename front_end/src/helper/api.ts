@@ -55,25 +55,19 @@ export function getUserPhotoUrl(url: string | null | undefined, forceRefresh = f
   if (!url || url.trim() === '') {
     return 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop';
   }
-  
   // Zaten tam URL ise
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    // Cache busting için timestamp ekleyelim (sadece forceRefresh true ise)
     return forceRefresh ? `${url}?t=${Date.now()}` : url;
   }
-  
-  // Local development için base URL
-  const baseUrl = 'http://localhost:3000';
-  
+  // VITE_API_URL'i kullan
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
   // Eğer slash ile başlamıyorsa ekle
   const path = url.startsWith('/') ? url : `/${url}`;
-  
   // Eğer uploads ile başlıyorsa direkt kullan
   if (path.includes('uploads/')) {
     const fullUrl = `${baseUrl}${path}`;
     return forceRefresh ? `${fullUrl}?t=${Date.now()}` : fullUrl;
   }
-  
   // Varsayılan olarak uploads klasörüne ekle
   const fullUrl = `${baseUrl}/uploads${path}`;
   return forceRefresh ? `${fullUrl}?t=${Date.now()}` : fullUrl;
