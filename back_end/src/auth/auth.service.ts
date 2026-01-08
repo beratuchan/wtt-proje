@@ -40,13 +40,13 @@ export class AuthService {
       email: user.email,
       photo: user.photo 
     };
-    
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     return {
       id: user.id,
       username: user.username,
       email: user.email,
       role: user.role,
-      photo: user.photo ? `http://localhost:3000/uploads/profile-photos/${user.photo}` : '',
+      photo: user.photo ? `${baseUrl}/uploads/profile-photos/${user.photo}` : '',
       accessToken: this.jwtService.sign(payload),
     };
   }
@@ -64,10 +64,10 @@ export class AuthService {
       order: { id: 'ASC' },
       select: ['id', 'username', 'email', 'role', 'photo'],
     });
-    
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     return users.map(user => ({
       ...user,
-      photo: user.photo ? `http://localhost:3000/uploads/profile-photos/${user.photo}` : '',
+      photo: user.photo ? `${baseUrl}/uploads/profile-photos/${user.photo}` : '',
     }));
   }
 
