@@ -10,6 +10,7 @@ import {
   Request,
   UseInterceptors,
   UploadedFile,
+  ParseFilePipe,
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
