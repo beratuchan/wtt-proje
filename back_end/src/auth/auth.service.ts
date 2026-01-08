@@ -40,13 +40,12 @@ export class AuthService {
       email: user.email,
       photo: user.photo 
     };
-    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     return {
       id: user.id,
       username: user.username,
       email: user.email,
       role: user.role,
-      photo: user.photo ? `${baseUrl}/uploads/profile-photos/${user.photo}` : '',
+      photo: user.photo || '',
       accessToken: this.jwtService.sign(payload),
     };
   }
@@ -61,13 +60,12 @@ export class AuthService {
 
   async getAllUsers() {
     const users = await this.usersRepository.find({
-      order: { id: 'ASC' },
+      order: { id: 'ASC' },\
       select: ['id', 'username', 'email', 'role', 'photo'],
     });
-    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     return users.map(user => ({
       ...user,
-      photo: user.photo ? `${baseUrl}/uploads/profile-photos/${user.photo}` : '',
+      photo: user.photo || '',
     }));
   }
 
@@ -201,33 +199,16 @@ export class AuthService {
         user.photo = '';
         console.log('✅ Fotoğraf kaldırıldı');
       } else {
-        // Dosya adını temizle
-        let fileName = updateData.photo;
-        
-        // Eğer URL gelirse sadece dosya adını al
-        if (fileName.includes('/uploads/profile-photos/')) {
-          fileName = fileName.split('/uploads/profile-photos/')[1] || fileName;
-        } else if (fileName.includes('profile-photos/')) {
-          fileName = fileName.split('profile-photos/')[1] || fileName;
-        }
-        
-        // Baştaki slash'ları temizle
-        fileName = fileName.replace(/^\/+/, '');
-        user.photo = fileName;
-        console.log('✅ Fotoğraf güncellendi:', fileName);
+        // Cloudinary'den gelen URL'yi direkt sakla
+        user.photo = updateData.photo;
+        console.log('✅ Fotoğraf güncellendi:', updateData.photo);
       }
     }
 
     await this.usersRepository.save(user);
     console.log('✅ Kullanıcı kaydedildi');
 
-    // Tam URL oluştur
-    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
-    const fullPhotoUrl = user.photo 
-      ? `${baseUrl}/uploads/profile-photos/${user.photo}`
-      : '';
-
-    console.log('✅ Tam photo URL:', fullPhotoUrl);
+    console.log('✅ Tam photo URL:', user.photo);
 
     // Yeni token oluştur
     const payload = { 
@@ -235,7 +216,7 @@ export class AuthService {
       sub: user.id, 
       role: user.role,
       email: user.email,
-      photo: fullPhotoUrl
+      photo: user.photo
     };
     
     const newToken = this.jwtService.sign(payload);

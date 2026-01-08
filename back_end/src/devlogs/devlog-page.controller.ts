@@ -80,12 +80,13 @@ export class DevlogPagesController {
   @UseGuards(AuthGuard('jwt'))
   @Post('upload-image')
   @UseInterceptors(FileInterceptor('image', multerDevlogConfig))
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(@UploadedFile() file: any) {
     if (!file) {
       throw new BadRequestException('Lütfen bir resim dosyası yükleyin');
     }
     
-    const imageUrl = `/uploads/devlog-images/${file.filename}`;
+    // Cloudinary kullanıldığında secure_url döndürülür
+    const imageUrl = file.secure_url || `/uploads/devlog-images/${file.filename}`;
     return { 
       success: true,
       url: imageUrl,
@@ -100,12 +101,13 @@ export class DevlogPagesController {
   @UseGuards(AuthGuard('jwt'))
   @Post('upload-cover')
   @UseInterceptors(FileInterceptor('cover', multerDevlogConfig))
-  async uploadCoverImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadCoverImage(@UploadedFile() file: any) {
     if (!file) {
       throw new BadRequestException('Lütfen bir kapak resmi yükleyin');
     }
     
-    const imageUrl = `/uploads/devlog-images/${file.filename}`;
+    // Cloudinary kullanıldığında secure_url döndürülür
+    const imageUrl = file.secure_url || `/uploads/devlog-images/${file.filename}`;
     return { 
       success: true,
       url: imageUrl,
