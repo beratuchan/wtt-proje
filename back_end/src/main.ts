@@ -2,8 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { join } from 'path';
 import * as express from 'express';
+import { initializeCloudinary } from './config/cloudinary.init';
 
 async function bootstrap() {
+  // ✅ FIRST: Initialize Cloudinary before anything else
+  initializeCloudinary();
+  
   const app = await NestFactory.create(AppModule);
   
   const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
