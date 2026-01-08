@@ -1,15 +1,11 @@
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import CloudinaryStorage from 'multer-storage-cloudinary';
-import { v2 as cloudinary } from 'cloudinary';
+import { cloudinary } from './cloudinary.init';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export function getMulterDevlogConfig(): MulterOptions {
-  // Cloudinary'i her kez config et (çünkü env var'lar artık set)
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME || 'dxwp8oppn',
-    api_key: process.env.CLOUDINARY_API_KEY || '946281819691849',
-    api_secret: process.env.CLOUDINARY_API_SECRET || '9BygPrL1ENxH1LrCwpoUONeOOk0',
-  });
+  // Use the initialized cloudinary instance from cloudinary.init
+  // No need to config again - it's already done in main.ts
 
   return {
     storage: new CloudinaryStorage({
