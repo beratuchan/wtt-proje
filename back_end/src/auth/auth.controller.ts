@@ -10,8 +10,6 @@ import {
   Request,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
@@ -42,15 +40,7 @@ export class AuthController {
   @UseInterceptors(FileInterceptor('photo', getMulterConfig()))
   async register(
     @Body(ValidationPipe) registerUser: RegisterUserDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: false,
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }), // 50MB
-        ],
-      }),
-    )
-    file?: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     if (file) {
       // Debug: File object'inin tüm property'lerini göster
