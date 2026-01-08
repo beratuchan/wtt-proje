@@ -1,7 +1,12 @@
-# Vercel configuration for React frontend (optional, for Vercel deploys)
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "http://localhost:3000/api/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "https://senin-backend.onrender.com/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
