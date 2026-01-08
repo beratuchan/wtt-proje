@@ -1,2 +1,0 @@
-# Heroku compatible Procfile for NestJS backend
-web: npm run start:prod
