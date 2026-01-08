@@ -15,7 +15,7 @@ export function getMulterDevlogConfig(): MulterOptions {
       transformation: [{ width: 1200, height: 600, crop: 'fill' }],
     }),
     limits: {
-      fileSize: 10 * 1024 * 1024, // 10MB
+      fileSize: 50 * 1024 * 1024, // 50MB - Cloudinary handling için yeterli
     },
     fileFilter: (req, file, callback) => {
       const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];

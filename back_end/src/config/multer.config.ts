@@ -15,7 +15,7 @@ export function getMulterConfig(): MulterOptions {
       transformation: [{ width: 500, height: 500, crop: 'fill' }],
     }),
     limits: {
-      fileSize: 5 * 1024 * 1024, // 5MB
+      fileSize: 50 * 1024 * 1024, // 50MB - Cloudinary handling için yeterli
     },
     fileFilter: (req, file, callback) => {
       const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];

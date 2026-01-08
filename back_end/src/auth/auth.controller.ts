@@ -46,7 +46,7 @@ export class AuthController {
       new ParseFilePipe({
         fileIsRequired: false,
         validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+          new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }), // 50MB
         ],
       }),
     )
