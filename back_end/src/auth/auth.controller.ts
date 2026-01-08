@@ -53,8 +53,14 @@ export class AuthController {
     file?: Express.Multer.File,
   ) {
     if (file) {
-      // Cloudinary URL'sini kullan (secure_url), fallback olarak path veya filename
-      registerUser.photo = (file as any).secure_url || (file as any).path || file.filename;
+      // Debug: File object'inin tüm property'lerini göster
+      console.log('📁 File object keys:', Object.keys(file));
+      console.log('📁 Full file object:', JSON.stringify(file, null, 2));
+      
+      // Cloudinary URL'sini bul
+      const photoUrl = (file as any).secure_url || (file as any).path || (file as any).url || file.filename;
+      registerUser.photo = photoUrl;
+      console.log('✅ Seçilen photo URL:', photoUrl);
     }
     
     return this.authService.register(registerUser);
@@ -128,10 +134,14 @@ async changePassword(
     
     // Eğer dosya yüklendiyse
     if (file) {
-      // Cloudinary URL'sini kullan (secure_url), fallback olarak path veya filename
-      const photoUrl = (file as any).secure_url || (file as any).path || file.filename;
+      // Debug: File object'inin tüm property'lerini göster
+      console.log('📁 File object keys:', Object.keys(file));
+      console.log('📁 Full file object:', JSON.stringify(file, null, 2));
+      
+      // Cloudinary URL'sini bul
+      const photoUrl = (file as any).secure_url || (file as any).path || (file as any).url || file.filename;
       updateData.photo = photoUrl;
-      console.log('✅ Fotoğraf yüklendi:', photoUrl);
+      console.log('✅ Seçilen photo URL:', photoUrl);
     }
     
     // Eğer frontend'den photo boş string olarak gelmişse (kaldırma isteği)

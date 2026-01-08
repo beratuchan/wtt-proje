@@ -55,7 +55,25 @@ export class AuthService {
     user.password = bcrypt.hashSync(registerUser.password, 10);
     user.photo = registerUser.photo || '';
     
-    return this.usersRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
+    
+    // Register'dan sonra login gibi token dön
+    const payload = { 
+      username: savedUser.username, 
+      sub: savedUser.id, 
+      role: savedUser.role,
+      email: savedUser.email,
+      photo: savedUser.photo 
+    };
+    
+    return {
+      id: savedUser.id,
+      username: savedUser.username,
+      email: savedUser.email,
+      role: savedUser.role,
+      photo: savedUser.photo || '',
+      accessToken: this.jwtService.sign(payload),
+    };
   }
 
   async getAllUsers() {
