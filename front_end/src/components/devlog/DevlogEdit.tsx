@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { useLoggedInUsersContext } from '../auth/LoggedInUserContext';
 import { api, getFullImageUrl } from '../../helper/api';
 import { toast } from 'sonner';
 import {

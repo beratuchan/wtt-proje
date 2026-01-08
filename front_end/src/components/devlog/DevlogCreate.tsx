@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { useLoggedInUsersContext } from '../auth/LoggedInUserContext';
 import { api } from '../../helper/api';
 import { toast } from 'sonner';
 import {
