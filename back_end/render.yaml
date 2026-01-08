@@ -17,6 +17,8 @@ services:
         value: 946281819691849
       - key: CLOUDINARY_API_SECRET
         value: 9BygPrL1ENxH1LrCwpoUONeOOk0
+      - key: CLOUDINARY_URL
+        value: cloudinary://946281819691849:9BygPrL1ENxH1LrCwpoUONeOOk0@dxwp8oppn
     autoDeploy: true
 
 databases:
