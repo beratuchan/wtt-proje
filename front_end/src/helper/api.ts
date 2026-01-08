@@ -84,28 +84,22 @@ export function getFullImageUrl(url: string | null | undefined): string {
   if (!url || url.trim() === '') {
     return '';
   }
-  
   // Zaten tam URL ise
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  
   // base64 ise
   if (url.startsWith('data:image')) {
     return url;
   }
-  
-  // Local development için base URL
-  const baseUrl = 'http://localhost:3000';
-  
+  // VITE_API_URL'i kullan
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
   // Eğer slash ile başlamıyorsa ekle
   const path = url.startsWith('/') ? url : `/${url}`;
-  
   // Eğer uploads ile başlıyorsa direkt kullan
   if (path.includes('uploads/')) {
     return `${baseUrl}${path}`;
   }
-  
   // Varsayılan olarak profile-photos klasörüne ekle
   return `${baseUrl}/uploads/profile-photos${path}`;
 }
