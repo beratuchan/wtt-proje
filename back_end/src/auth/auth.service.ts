@@ -190,7 +190,7 @@ export class AuthService {
       console.log('✅ Email güncellendi:', updateData.email);
     }
     
-    // ✅ FOTOĞRAF GÜNCELLEME - BASİT VERSİYON
+    // ✅ FOTOĞRAF GÜNCELLEME - Cloudinary URL'lerini direkt sakla
     if (updateData.photo !== undefined) {
       console.log('🟡 Photo güncelleniyor:', updateData.photo);
       
@@ -199,9 +199,10 @@ export class AuthService {
         user.photo = '';
         console.log('✅ Fotoğraf kaldırıldı');
       } else {
-        // Cloudinary'den gelen URL'yi direkt sakla
+        // Cloudinary URL'yi (https://...) veya tam path'i direkt sakla
+        // Eğer URL değilse (sadece filename), bu hata demektir
         user.photo = updateData.photo;
-        console.log('✅ Fotoğraf güncellendi:', updateData.photo);
+        console.log('✅ Fotoğraf URL saklandı:', updateData.photo);
       }
     }
 
