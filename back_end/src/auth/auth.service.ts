@@ -222,8 +222,9 @@ export class AuthService {
     console.log('✅ Kullanıcı kaydedildi');
 
     // Tam URL oluştur
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     const fullPhotoUrl = user.photo 
-      ? `http://localhost:3000/uploads/profile-photos/${user.photo}`
+      ? `${baseUrl}/uploads/profile-photos/${user.photo}`
       : '';
 
     console.log('✅ Tam photo URL:', fullPhotoUrl);
