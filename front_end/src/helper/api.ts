@@ -1,8 +1,30 @@
 import axios from "axios";
 import Cookies from "universal-cookie";
 
+// ✅ Backend URL'sini belirle - VITE_API_URL veya fallback
+const getBackendUrl = (): string => {
+  const viteUrl = import.meta.env.VITE_API_URL;
+  
+  if (viteUrl && viteUrl !== 'undefined') {
+    return viteUrl;
+  }
+  
+  // Production'da window.location'dan backend URL'i tahmin et
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname.includes('vercel.app')) {
+      return 'https://wtt-proje.onrender.com';
+    } else if (window.location.hostname === 'localhost') {
+      return 'http://localhost:3000';
+    } else {
+      return `${window.location.protocol}//${window.location.hostname}:3000`;
+    }
+  }
+  
+  return 'http://localhost:3000';
+};
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/",
+  baseURL: getBackendUrl(),
 });
 
 // Her istekten önce token'ı otomatik ekle
@@ -61,8 +83,19 @@ export function getUserPhotoUrl(url: string | null | undefined, forceRefresh = f
     return forceRefresh ? `${url}?t=${Date.now()}` : url;
   }
   
-  // VITE_API_URL'i kullan (local uploads için)
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // VITE_API_URL'i kullan - eğer set edilmemişse, window.location'dan base URL'i belirle
+  let baseUrl = import.meta.env.VITE_API_URL;
+  
+  if (!baseUrl || baseUrl === 'undefined') {
+    // Production'da window.location'dan backend URL'i tahmin et
+    // Eğer vercel.app'ta ise, render backend'i kullan
+    if (window.location.hostname.includes('vercel.app') || window.location.hostname === 'localhost') {
+      baseUrl = 'https://wtt-proje.onrender.com';
+    } else {
+      baseUrl = `${window.location.protocol}//${window.location.hostname}:3000`;
+    }
+  }
+  
   const path = url.startsWith('/') ? url : `/${url}`;
   
   const fullUrl = path.includes('uploads/') 
@@ -88,8 +121,18 @@ export function getFullImageUrl(url: string | null | undefined): string {
     return url;
   }
   
-  // VITE_API_URL'i kullan (local uploads için fallback)
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // VITE_API_URL'i kullan - eğer set edilmemişse, window.location'dan base URL'i belirle
+  let baseUrl = import.meta.env.VITE_API_URL;
+  
+  if (!baseUrl || baseUrl === 'undefined') {
+    // Production'da window.location'dan backend URL'i tahmin et
+    if (window.location.hostname.includes('vercel.app') || window.location.hostname === 'localhost') {
+      baseUrl = 'https://wtt-proje.onrender.com';
+    } else {
+      baseUrl = `${window.location.protocol}//${window.location.hostname}:3000`;
+    }
+  }
+  
   const path = url.startsWith('/') ? url : `/${url}`;
   
   return path.includes('uploads/')

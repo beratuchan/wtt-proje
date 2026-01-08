@@ -12,7 +12,7 @@ import {
   ModalHeader,
   ModalBody,
 } from "flowbite-react";
-import { api, getFullImageUrl } from "../../helper/api";
+import { api, getFullImageUrl, getUserPhotoUrl } from "../../helper/api";
 import { toast } from "sonner";
 import { 
   HiUser, 
@@ -155,8 +155,8 @@ const UserProfile = () => {
     ) {
       return photoUrl;
     }
-    // Her durumda tam backend adresiyle döndür
-    return getFullImageUrl(photoUrl);
+    // Profil fotoğrafları için getUserPhotoUrl kullan
+    return getUserPhotoUrl(photoUrl);
   };
 
   // Profil kaydetme fonksiyonu
