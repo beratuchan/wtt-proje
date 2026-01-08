@@ -144,19 +144,18 @@ const UserProfile = () => {
   // Fotoğraf URL'sini getir
   const getPhotoUrl = () => {
     const photoUrl = photoPreview || loggedInUser?.photo;
-    
     if (!photoUrl || photoUrl.trim() === '') {
       return null;
     }
-    
-    if (photoUrl.startsWith('data:image')) {
+    // Zaten tam URL ise veya base64 ise
+    if (
+      photoUrl.startsWith('data:image') ||
+      photoUrl.startsWith('http://') ||
+      photoUrl.startsWith('https://')
+    ) {
       return photoUrl;
     }
-    
-    if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
-      return photoUrl;
-    }
-    
+    // Her durumda tam backend adresiyle döndür
     return getFullImageUrl(photoUrl);
   };
 
