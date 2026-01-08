@@ -129,9 +129,9 @@ export class NotebooksService {
       throw new NotFoundException('Devlog sayfası bulunamadı');
     }
 
-    // Erişim kontrolü: Kullanıcı kendi sayfasını veya public sayfayı ekleyebilir
+    // Erişim kontrolü: Kullanıcı kendi sayfasını her zaman, başkasının published sayfasını ekleyebilir
     if (devlogPage.author.id !== user.id && !devlogPage.isPublished) {
-      throw new ForbiddenException('Bu sayfayı deftere ekleme yetkiniz yok');
+      throw new ForbiddenException('Sadece kendi sayfalarınızı veya yayınlanmış sayfaları deftere ekleyebilirsiniz');
     }
 
     // Zaten ekli mi kontrol et
