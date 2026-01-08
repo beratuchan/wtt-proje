@@ -46,6 +46,15 @@ api.interceptors.request.use(
       }
     }
     
+    // FormData için Content-Type otomatik ayarlanır, manuel olarak setleme
+    if (!(config.data instanceof FormData)) {
+      // JSON isteği için Content-Type'ı belirt
+      if (config.headers['Content-Type'] === undefined) {
+        config.headers['Content-Type'] = 'application/json';
+      }
+    }
+    // FormData ise Content-Type'ı ayarlamıyoruz - axios otomatik boundary ekler
+    
     return config;
   },
   (error) => {
