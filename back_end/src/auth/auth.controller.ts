@@ -20,7 +20,7 @@ import { RegisterUserDto } from './dtos/registerUserDto';
 import { LoginUserDto } from './dtos/loginUserDto';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerConfig } from '../config/multer.config';
+import { getMulterConfig } from '../config/multer.config';
 import { RolesGuard } from './roles.guard';
 import { Role } from './role.decorator';
 import { UpdateUserDto } from './dtos/updateUserDto';
@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   @Post('register')
-  @UseInterceptors(FileInterceptor('photo', multerConfig))
+  @UseInterceptors(FileInterceptor('photo', getMulterConfig()))
   async register(
     @Body(ValidationPipe) registerUser: RegisterUserDto,
     @UploadedFile(
