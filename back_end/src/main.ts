@@ -6,11 +6,17 @@ import * as express from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',');
+  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
+  const allowedOrigins = corsOrigin.split(',').map(origin => origin.trim());
+  
+  console.log('🌍 CORS konfigürasyonu:');
+  console.log('   İzin verilen originler:', allowedOrigins);
   
   app.enableCors({
     origin: allowedOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
   
   // ✅ Tüm upload klasörlerini statik dosya olarak sun
