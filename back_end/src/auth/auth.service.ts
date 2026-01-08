@@ -227,7 +227,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       role: user.role,
-      photo: fullPhotoUrl,
+      photo: user.photo,
       accessToken: newToken,
     };
   }
