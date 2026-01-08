@@ -78,7 +78,7 @@ export class AuthService {
 
   async getAllUsers() {
     const users = await this.usersRepository.find({
-      order: { id: 'ASC' },\
+      order: { id: 'ASC' },
       select: ['id', 'username', 'email', 'role', 'photo'],
     });
     return users.map(user => ({
