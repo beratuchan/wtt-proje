@@ -12,13 +12,13 @@ services:
       - key: CORS_ORIGIN
         value: https://wtt-final.vercel.app
       - key: CLOUDINARY_NAME
-        value: dxwp8oppn
+        sync: false
       - key: CLOUDINARY_API_KEY
-        value: 946281819691849
+        sync: false
       - key: CLOUDINARY_API_SECRET
-        value: 9BygPrL1ENxH1LrCwpoUONeOOk0
+        sync: false
       - key: CLOUDINARY_URL
-        value: cloudinary://946281819691849:9BygPrL1ENxH1LrCwpoUONeOOk0@dxwp8oppn
+        sync: false
     autoDeploy: true
 
 databases:
