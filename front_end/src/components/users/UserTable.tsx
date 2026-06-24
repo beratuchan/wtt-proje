@@ -177,10 +177,6 @@ const UserTable = () => {
         return "red";
       case "user":
         return "blue";
-      case "teacher":
-        return "purple";
-      case "student":
-        return "green";
       default:
         return "gray";
     }
@@ -335,8 +331,6 @@ const UserTable = () => {
                 >
                   <option value="user">Regular User</option>
                   <option value="admin">Administrator</option>
-                  <option value="teacher">Teacher</option>
-                  <option value="student">Student</option>
                 </Select>
               </div>
 

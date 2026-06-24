@@ -3,9 +3,9 @@ import * as cloudinary from 'cloudinary';
 // Cloudinary'yi merkezi olarak configure et
 export function initializeCloudinary() {
   const config = {
-    cloud_name: process.env.CLOUDINARY_NAME || 'dxwp8oppn',
-    api_key: process.env.CLOUDINARY_API_KEY || '946281819691849',
-    api_secret: process.env.CLOUDINARY_API_SECRET || '9BygPrL1ENxH1LrCwpoUONeOOk0',
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
   };
 
   console.log('☁️ Cloudinary initializing with config:', {

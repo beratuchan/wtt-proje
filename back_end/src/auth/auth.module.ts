@@ -16,7 +16,7 @@ import { Complaint } from '../complaint/complaint.entity';
     PassportModule, // authentication ve authorization işlemlerini yapan modül
     JwtModule.register({
       // token üretirken kullanılacak modül ve konfigürasyonlar
-      secret: 'SECRET_KEY',
+      secret: process.env.JWT_SECRET || 'SECRET_KEY',
       signOptions: { expiresIn: '1h' },
     }),
   ],
