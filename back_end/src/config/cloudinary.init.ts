@@ -14,19 +14,12 @@ export function initializeCloudinary() {
     api_secret: config.api_secret ? '***' : 'MISSING',
   });
 
+  if (!config.cloud_name || !config.api_key || !config.api_secret) {
+    console.warn('⚠️  Cloudinary credentials not configured — file uploads will be unavailable');
+    return cloudinary;
+  }
+
   cloudinary.v2.config(config);
-
-  // Verify configuration
-  if (!cloudinary.v2.config().cloud_name) {
-    console.error('❌ CRITICAL: Cloudinary cloud_name is not configured!');
-    throw new Error('Cloudinary cloud_name is required');
-  }
-
-  if (!cloudinary.v2.config().api_key) {
-    console.error('❌ CRITICAL: Cloudinary api_key is not configured!');
-    throw new Error('Cloudinary api_key is required');
-  }
-
   console.log('✅ Cloudinary initialized successfully');
   return cloudinary;
 }
